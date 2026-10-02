@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f1722">
+<title>StudyVault</title>
+<style>
+:root{--bg:#0f1722;--s1:#172233;--s2:#1e2d44;--ln:#2a3b57;--tx:#e9eef7;--mt:#8b9bb4;--hl:#ffd84d;--ok:#5eead4;--bad:#ff7a8a;--serif:Georgia,'Iowan Old Style','Times New Roman',serif}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{font:15px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--serif);font-weight:700;line-height:1.25}
+:focus-visible{outline:2px solid var(--hl);outline-offset:2px}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--ln);padding:calc(10px + env(safe-area-inset-top)) 14px 10px}
+.hin{max-width:860px;margin:auto;display:flex;gap:12px;align-items:center;position:relative}
+.logo{font:700 20px var(--serif);white-space:nowrap}
+.logo i{font-style:normal;background:var(--hl);color:#1a1500;padding:0 6px;border-radius:4px;margin-right:2px}
+#q{flex:1;min-width:0;background:var(--s1);border:1px solid var(--ln);border-radius:10px;padding:9px 12px}
+#res{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--s1);border:1px solid var(--ln);border-radius:12px;max-height:55vh;overflow:auto;padding:6px;display:none;box-shadow:0 18px 40px #0009}
+#res div{padding:10px;border-radius:8px;cursor:pointer}
+#res div:active{background:var(--s2)}
+#res small,.mt{color:var(--mt)}
+main{max-width:860px;margin:auto;padding:16px 14px}
+#crumbs{display:flex;gap:6px;flex-wrap:wrap;color:var(--mt);font-size:13px;margin-bottom:16px}
+#crumbs button{color:var(--mt);padding:2px 0}
+#crumbs b{color:var(--tx);font-weight:600}
+.hero{margin-bottom:18px}
+.hero h1{font-size:28px}
+.hero p,.panel p,.tile p{color:var(--mt);font-size:13px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.tile{background:var(--s1);border:1px solid var(--ln);border-radius:14px;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.tile:active{background:var(--s2)}
+.tile h3{font-size:17px}
+.ico{width:46px;height:46px;border-radius:10px;background:var(--s2);display:grid;place-items:center;font-size:23px;margin-bottom:8px}
+.ico.lg{margin:0}
+.panel{background:var(--s1);border:1px solid var(--ln);border-radius:18px;padding:16px;margin-bottom:14px}
+.head{display:flex;align-items:center;gap:8px}
+.head h2{font-size:21px}
+.grow{flex:1;min-width:0}
+.sq{width:40px;height:40px;border-radius:10px;background:var(--s2);border:1px solid var(--ln);flex:none}
+.sq.sm{width:34px;height:34px}
+.sq.danger{background:#ff7a8a1c;border-color:#ff7a8a55}
+.btn{background:var(--hl);color:#1a1500;font-weight:700;padding:10px 18px;border-radius:10px}
+.btn.ghost{background:var(--s2);color:var(--tx);border:1px solid var(--ln);font-weight:600}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btn.wide{width:100%;margin-top:8px}
+.btn:active,.sq:active{transform:scale(.97)}
+.row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.row.end{justify-content:flex-end}
+.row.c{justify-content:center;align-items:center}
+.mb{margin:0 0 14px}
+.tabs{display:flex;gap:22px;border-bottom:1px solid var(--ln);margin-bottom:14px}
+.tabs button{padding:8px 0;color:var(--mt);font-weight:600;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs .on{color:var(--tx);border-color:var(--hl)}
+.notes{width:100%;min-height:55vh;background:var(--s1);border:1px solid var(--ln);border-radius:14px;padding:14px;line-height:1.7;resize:vertical}
+.saved{color:var(--ok);font-size:12px;margin-top:6px;opacity:0;transition:opacity .2s}
+.saved.on{opacity:1}
+.card{background:var(--s1);border:1px solid var(--ln);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.card .top2{display:flex;gap:6px;align-items:flex-start}
+.card h3{font-size:18px;flex:1}
+.card p{font-size:14px}
+q{display:block;color:var(--mt);font-style:italic;font-size:13px;border-left:3px solid var(--hl);padding-left:10px;quotes:none}
+.chip{display:inline-block;align-self:flex-start;background:#ffd84d1f;color:var(--hl);border-radius:6px;padding:2px 9px;font-size:12px}
+.empty{text-align:center;color:var(--mt);padding:44px 16px;border:1px dashed var(--ln);border-radius:14px;grid-column:1/-1}
+.empty div{font-size:38px;margin-bottom:6px}
+.fab{position:fixed;right:18px;bottom:calc(86px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:16px;background:var(--hl);color:#1a1500;font-size:30px;line-height:1;box-shadow:0 10px 24px #0008;z-index:15}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:18;background:var(--s1);border-top:1px solid var(--ln);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px;font-size:11px;color:var(--mt)}
+.nav span{font-size:20px}
+#ov{position:fixed;inset:0;z-index:50;background:#070b12e6;display:none;align-items:flex-end;justify-content:center}
+#ov.on{display:flex}
+.sheet{width:100%;max-width:560px;max-height:92vh;overflow:auto;background:var(--s1);border:1px solid var(--ln);border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));animation:up .2s ease}
+@keyframes up{from{transform:translateY(24px);opacity:0}}
+.sheet.study,.sheet.quiz{height:100%;max-height:none;border-radius:0;max-width:640px}
+.sheet.study{display:flex;flex-direction:column;justify-content:center;gap:14px;background:transparent;border:0}
+.sheet h3{font-size:20px;margin-bottom:12px}
+.sheet label{display:block;color:var(--mt);font-size:13px;margin:12px 0 5px}
+.sheet input,.sheet textarea,.sheet select{width:100%;background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:10px 12px}
+.bar{display:flex;align-items:center;gap:8px;color:var(--mt);font-size:14px;margin-bottom:8px}
+.prog{height:5px;background:var(--s2);border-radius:5px;overflow:hidden;margin-bottom:14px}
+.prog i{display:block;height:100%;background:var(--hl);transition:width .25s}
+.flip{perspective:1000px;height:min(50vh,360px);cursor:pointer}
+.fi{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.fi.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--s1);border:2px solid var(--hl);border-radius:20px;padding:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;overflow:auto}
+.face.back{transform:rotateY(180deg);border-color:var(--ok)}
+.face h2{font-size:32px}
+.hint{text-align:center;color:var(--mt);font-size:12px}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px 6px;background:var(--bg);border:1px solid var(--ln);border-radius:10px;font-weight:600;color:var(--mt)}
+.seg .on{background:var(--hl);color:#1a1500;border-color:var(--hl)}
+.qq{text-align:center;padding:20px}
+.qq h2{font-size:22px;margin-top:4px}
+.opt{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:13px 14px;margin-bottom:9px}
+.opt.ok{border:2px solid var(--ok);background:#5eead41a}
+.opt.bad{border:2px solid var(--bad);background:#ff7a8a1a}
+.fb{min-height:24px;margin:4px 0}
+.res{text-align:center;padding:8px 0 14px}
+.res .big{font-size:48px}
+.res h2{font-size:42px;color:var(--hl)}
+.miss{background:var(--bg);border-radius:10px;padding:10px 12px;margin-top:8px}
+.miss span{display:block;color:var(--mt);font-size:13px}
+#toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:9px 16px;border-radius:10px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
+#toast.on{opacity:1}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(min-width:600px){#ov{align-items:center}.sheet{border-radius:22px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="hin"><div class="logo"><i>Study</i>Vault</div><input id="q" type="search" placeholder="Search terms or meanings" autocomplete="off"><div id="res"></div></div></header>
+<main><div id="crumbs"></div><div id="main"></div></main>
+<button class="fab" id="fab" aria-label="Add">+</button>
+<nav class="nav">
+<button data-a="home"><span>📚</span>Library</button>
+<button data-a="studyNow"><span>🃏</span>Study</button>
+<button data-a="quizNow"><span>🎯</span>Quiz</button>
+<button data-a="backup"><span>💾</span>Backup</button>
+</nav>
+<div id="ov"><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
+<input type="file" id="file" accept=".json,application/json" hidden>
+<script>
+const $=s=>document.querySelector(s),KEY='studyvault_data_v1';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const shuffle=a=>{a=[...a];for(let i=a.length;i>1;){const j=Math.random()*i--|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const ICONS=['📖','🩺','💻','🌐','🧪','🧮','🏛️','⚖️','🧠','🎨','🎵','🌍'];
+const OLD={'fa-book':'📖','fa-heart-pulse':'🩺','fa-code':'💻','fa-language':'🌐','fa-flask':'🧪','fa-calculator':'🧮','fa-landmark':'🏛️','fa-gavel':'⚖️','fa-brain':'🧠'};
+const ic=i=>OLD[i]||(/^fa-/.test(i||'')?'📖':i||'📖');
+const SAMPLE=[{id:'cat-1',name:'Medical Terminology',icon:'🩺',notes:'Prefixes\nBrady- slow\nTachy- fast\nCardi/o heart',decks:[{id:'deck-1',title:'Cardiology Roots',cards:[
+{id:'c-1',word:'Bradycardia',meaning:'Abnormally slow heart rate (under 60 bpm in adults).',root:'brady- (slow) + kardia (heart)',sentence:'The ECG confirmed sinus bradycardia during sleep.'},
+{id:'c-2',word:'Tachycardia',meaning:'Abnormally fast heart rate (over 100 bpm in adults).',root:'tachy- (swift) + kardia (heart)',sentence:'Too much caffeine can cause temporary tachycardia.'},
+{id:'c-3',word:'Myocardial infarction',meaning:'Blocked blood supply that damages part of the heart muscle.',root:'myo (muscle) + cardium (heart)',sentence:'Early treatment limits damage in a myocardial infarction.'}]}]},
+{id:'cat-2',name:'Computer Science',icon:'💻',notes:'DRY: don\'t repeat yourself\nKISS: keep it simple',decks:[{id:'deck-2',title:'Data Structures',cards:[
+{id:'c-4',word:'Recursion',meaning:'A function that calls itself to solve smaller versions of a problem.',root:'recurrere (Latin: run back)',sentence:'Factorial is a classic example of recursion.'},
+{id:'c-5',word:'Polymorphism',meaning:'Different objects responding to the same call in their own way.',root:'poly (many) + morph (form)',sentence:'Method overriding is runtime polymorphism.'}]}]}];
+function norm(d){if(!Array.isArray(d))return null;return d.map(c=>({id:c.id||uid('c'),name:c.name||'Untitled',icon:ic(c.icon),notes:c.notes||'',decks:(c.decks||[]).map(k=>({id:k.id||uid('d'),title:k.title||'Deck',cards:(k.cards||[]).filter(x=>x&&x.word).map(x=>({id:x.id||uid('k'),word:x.word,meaning:x.meaning||'',root:x.root||'',sentence:x.sentence||''}))}))}))}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S.cats))}catch(e){}}
+let S={cats:[],v:'home',c:null,d:null,tab:'decks'},ST,QZ,mode='',tt,nt,Q={n:5,m:'w',s:'all'};
+try{S.cats=norm(JSON.parse(localStorage.getItem(KEY)))||norm(SAMPLE)}catch(e){S.cats=norm(SAMPLE)}
+const cat=()=>S.cats.find(x=>x.id===S.c),deck=()=>(cat()||{decks:[]}).decks.find(x=>x.id===S.d);
+const cnt=c=>({d:c.decks.length,k:c.decks.reduce((s,x)=>s+x.cards.length,0)});
+const empty=(i,t)=>`<div class="empty"><div>${i}</div>${t}</div>`;
+const plural=(n,w)=>n+' '+w+(n===1?'':'s');
+function poolOf(s){if(s==='all')return S.cats.flatMap(c=>c.decks.flatMap(d=>d.cards));const id=s.slice(2);return S.cats.flatMap(c=>s[0]==='c'?(c.id===id?c.decks.flatMap(d=>d.cards):[]):c.decks.filter(d=>d.id===id).flatMap(d=>d.cards))}
+const scopeNow=()=>S.v==='deck'?'d:'+S.d:S.v==='cat'?'c:'+S.c:'all';
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1800)}
+function go(v,c=S.c,d=S.d){S.v=v;S.c=c;S.d=d;render();scrollTo(0,0)}
+function sheet(h,m=''){mode=m;const s=$('#sheet');s.className='sheet '+m;s.innerHTML=h;$('#ov').classList.add('on')}
+function closeSheet(){mode='';$('#ov').classList.remove('on')}
+function form(title,fields,done){
+sheet(`<h3>${title}</h3>`+fields.map(f=>`<label for="f_${f.k}">${f.l}</label>`+(f.t==='select'?`<select id="f_${f.k}">${f.o.map(o=>`<option ${o===f.v?'selected':''}>${esc(o)}</option>`).join('')}</select>`:f.t==='area'?`<textarea id="f_${f.k}" rows="3" placeholder="${esc(f.p||'')}">${esc(f.v)}</textarea>`:`<input id="f_${f.k}" value="${esc(f.v)}" placeholder="${esc(f.p||'')}">`)).join('')+`<div class="row end"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" id="ok">Save</button></div>`);
+$('#ok').onclick=()=>{const o={};fields.forEach(f=>o[f.k]=$('#f_'+f.k).value.trim());const bad=fields.find(f=>f.req&&!o[f.k]);if(bad){$('#f_'+bad.k).focus();toast(bad.l+' is required');return}done(o);save();closeSheet();render()}}
+function render(){
+const c=cat(),d=deck();
+if(S.v!=='home'&&!c)return go('home',null,null);
+if(S.v==='deck'&&!d)return go('cat',S.c,null);
+let cr='<button data-a="home">🏠 Library</button>';
+if(c)cr+=' › '+(S.v==='deck'?`<button data-a="cat" data-id="${c.id}">${esc(c.name)}</button>`:`<b>${esc(c.name)}</b>`);
+if(S.v==='deck')cr+=` › <b>${esc(d.title)}</b>`;
+$('#crumbs').innerHTML=cr;
+$('#main').innerHTML=S.v==='home'?home():S.v==='cat'?catView(c):deckView(d);
+const f=$('#fab');f.hidden=S.v==='cat'&&S.tab==='notes';f.dataset.a=S.v==='home'?'newCat':S.v==='cat'?'newDeck':'newCard'}
+function home(){const T=S.cats.reduce((a,c)=>{const n=cnt(c);a.d+=n.d;a.k+=n.k;return a},{d:0,k:0});
+return `<div class="hero"><h1>Your library</h1><p>${plural(S.cats.length,'category').replace('categorys','categories')}, ${plural(T.d,'deck')}, ${plural(T.k,'card')}</p></div>`+(S.cats.length?`<div class="grid">`+S.cats.map(c=>{const n=cnt(c);return `<div class="tile" data-a="cat" data-id="${c.id}"><div class="ico">${esc(c.icon)}</div><h3>${esc(c.name)}</h3><p>${plural(n.d,'deck')}, ${plural(n.k,'card')}</p></div>`}).join('')+`</div>`:empty('📚','Nothing here yet. Tap + to add your first category.'))}
+function catView(c){const n=cnt(c);
+return `<div class="panel head"><div class="ico lg">${esc(c.icon)}</div><div class="grow"><h2>${esc(c.name)}</h2><p>${plural(n.d,'deck')}, ${plural(n.k,'card')}</p></div><button class="sq" data-a="editCat" aria-label="Edit">✏️</button><button class="sq danger" data-a="delCat" aria-label="Delete">🗑️</button></div>
+<div class="tabs"><button class="${S.tab==='decks'?'on':''}" data-a="tab" data-t="decks">Decks</button><button class="${S.tab==='notes'?'on':''}" data-a="tab" data-t="notes">Notes</button></div>`+
+(S.tab==='notes'?`<textarea id="notes" class="notes" placeholder="Write key points, formulas, or summaries for this category">${esc(c.notes)}</textarea><div id="saved" class="saved">✓ Saved</div>`:
+c.decks.length?`<div class="grid">`+c.decks.map(k=>`<div class="tile" data-a="deck" data-id="${k.id}"><h3>${esc(k.title)}</h3><p>${plural(k.cards.length,'card')}</p><div class="row"><button class="btn sm" data-a="study" data-id="d:${k.id}">▶ Study</button><button class="btn sm ghost" data-a="quizAt" data-id="d:${k.id}">🎯 Quiz</button></div></div>`).join('')+`</div>`:empty('🗂️','No decks yet. Tap + to add one.'))}
+function deckView(d){
+return `<div class="panel head"><div class="grow"><h2>${esc(d.title)}</h2><p>${plural(d.cards.length,'card')}</p></div><button class="sq" data-a="editDeck" aria-label="Edit">✏️</button><button class="sq danger" data-a="delDeck" aria-label="Delete">🗑️</button></div>
+<div class="row mb"><button class="btn" data-a="study" data-id="d:${d.id}">▶ Study</button><button class="btn ghost" data-a="quizAt" data-id="d:${d.id}">🎯 Quiz</button></div>`+
+(d.cards.length?`<div class="grid">`+d.cards.map(k=>`<div class="card"><div class="top2"><h3>${esc(k.word)}</h3><button class="sq sm" data-a="editCard" data-id="${k.id}" aria-label="Edit">✏️</button><button class="sq sm danger" data-a="delCard" data-id="${k.id}" aria-label="Delete">🗑️</button></div>${k.root?`<span class="chip">${esc(k.root)}</span>`:''}<p>${esc(k.meaning)}</p>${k.sentence?`<q>${esc(k.sentence)}</q>`:''}</div>`).join('')+`</div>`:empty('🃏','No cards yet. Tap + to add one.'))}
+const cardFields=k=>[{k:'word',l:'Word or term',req:1,v:k.word||'',p:'e.g. Bradycardia'},{k:'meaning',l:'Meaning',t:'area',req:1,v:k.meaning||'',p:'e.g. Abnormally slow heart rate'},{k:'root',l:'Root word or origin (optional)',v:k.root||'',p:'e.g. brady- (slow) + kardia (heart)'},{k:'sentence',l:'Example sentence (optional)',t:'area',v:k.sentence||''}];
+const A={
+home:()=>go('home',null,null),
+cat:d=>{S.tab='decks';go('cat',d.id||S.c,null)},
+deck:d=>go('deck',S.c,d.id),
+tab:d=>{S.tab=d.t;render()},
+close:closeSheet,
+newCat:()=>form('New category',[{k:'name',l:'Name',req:1,v:'',p:'e.g. Biology'},{k:'icon',l:'Icon',t:'select',o:ICONS,v:'📖'}],o=>S.cats.push({id:uid('c'),name:o.name,icon:o.icon,notes:'',decks:[]})),
+editCat:()=>{const c=cat();form('Edit category',[{k:'name',l:'Name',req:1,v:c.name},{k:'icon',l:'Icon',t:'select',o:ICONS,v:c.icon}],o=>{c.name=o.name;c.icon=o.icon})},
+delCat:()=>{if(confirm('Delete this category with all its decks and cards?')){S.cats=S.cats.filter(x=>x.id!==S.c);save();go('home',null,null)}},
+newDeck:()=>form('New deck',[{k:'title',l:'Deck title',req:1,v:'',p:'e.g. Chapter 1'}],o=>cat().decks.push({id:uid('d'),title:o.title,cards:[]})),
+editDeck:()=>{const d=deck();form('Edit deck',[{k:'title',l:'Deck title',req:1,v:d.title}],o=>{d.title=o.title})},
+delDeck:()=>{if(confirm('Delete this deck and all its cards?')){const c=cat();c.decks=c.decks.filter(x=>x.id!==S.d);save();go('cat',S.c,null)}},
+newCard:()=>form('New flashcard',cardFields({}),o=>deck().cards.push({id:uid('k'),...o})),
+editCard:d=>{const k=deck().cards.find(x=>x.id===d.id);form('Edit flashcard',cardFields(k),o=>Object.assign(k,o))},
+delCard:d=>{if(confirm('Delete this flashcard?')){const x=deck();x.cards=x.cards.filter(k=>k.id!==d.id);save();render()}},
+studyNow:()=>study(scopeNow()),study:d=>study(d.id),
+quizNow:()=>quizSetup(scopeNow()),quizAt:d=>quizSetup(d.id),
+flip:()=>$('#fl')&&$('#fl').classList.toggle('flipped'),
+next:()=>{if(ST.i<ST.p.length-1){ST.i++;showCard()}},
+prev:()=>{if(ST.i>0){ST.i--;showCard()}},
+shuf:()=>{ST.p=shuffle(ST.p);ST.i=0;showCard();toast('Shuffled')},
+say:()=>{if(!window.speechSynthesis)return toast('Speech is not supported here');const u=new SpeechSynthesisUtterance(ST.p[ST.i].word);u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)},
+qn:d=>{Q.n=d.n;document.querySelectorAll('#qn button').forEach(b=>b.classList.toggle('on',b===d.el))},
+qm:d=>{Q.m=d.m;document.querySelectorAll('#qm button').forEach(b=>b.classList.toggle('on',b===d.el))},
+qgo:()=>startQuiz(),
+ans:d=>answer(+d.i),
+qnext:()=>{if(QZ.i+1<QZ.qs.length){QZ.i++;qShow()}else qDone()},
+hit:d=>{go('deck',d.c,d.d);$('#q').value='';$('#res').style.display='none'},
+backup:()=>sheet(`<h3>Backup</h3><p class="mt">Save a copy of everything, or restore from a backup file. Restoring replaces your current data.</p><div class="row"><button class="btn" data-a="exp">Export backup</button><button class="btn ghost" data-a="imp">Import backup</button></div><div class="row end"><button class="btn ghost" data-a="close">Close</button></div>`),
+exp:()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S.cats,null,2)],{type:'application/json'}));a.download='studyvault-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();toast('Backup exported')},
+imp:()=>$('#file').click()};
+function study(s){const p=poolOf(s);if(!p.length)return toast('Add some cards first');ST={p:[...p],i:0};
+sheet(`<div class="bar"><span id="stN"></span><div class="grow"></div><button class="sq sm" data-a="shuf" aria-label="Shuffle">🔀</button><button class="sq sm" data-a="close" aria-label="Close">✕</button></div><div class="prog"><i id="stP"></i></div><div class="flip" data-a="flip"><div class="fi" id="fl"><div class="face"><h2 id="stW"></h2><span class="chip" id="stR"></span></div><div class="face back"><p id="stM"></p><q id="stS"></q></div></div></div><div class="row c"><button class="btn ghost" data-a="prev">← Prev</button><button class="sq" data-a="say" aria-label="Pronounce">🔊</button><button class="btn" data-a="next">Next →</button></div><p class="hint">Tap the card to flip, swipe to move</p>`,'study');showCard()}
+function showCard(){const fl=$('#fl'),set=()=>{const c=ST.p[ST.i];$('#stN').textContent=`Card ${ST.i+1} of ${ST.p.length}`;$('#stP').style.width=(ST.i+1)/ST.p.length*100+'%';$('#stW').textContent=c.word;$('#stR').textContent=c.root;$('#stR').hidden=!c.root;$('#stM').textContent=c.meaning;$('#stS').textContent=c.sentence;$('#stS').hidden=!c.sentence};
+if(fl.classList.contains('flipped')){fl.classList.remove('flipped');setTimeout(set,220)}else set()}
+function quizSetup(s){Q.s=s;let o=`<option value="all">Everything</option>`;S.cats.forEach(c=>{o+=`<option value="c:${c.id}">${esc(c.name)}</option>`;c.decks.forEach(d=>o+=`<option value="d:${d.id}">&nbsp;&nbsp;${esc(d.title)}</option>`)});
+sheet(`<h3>Quiz setup</h3><label for="qs">What to quiz</label><select id="qs">${o}</select><label>Number of questions</label><div class="seg" id="qn">${[5,10,20,'All'].map(n=>`<button class="${String(n)===String(Q.n)?'on':''}" data-a="qn" data-n="${n}">${n}</button>`).join('')}</div><label>Direction</label><div class="seg" id="qm"><button class="${Q.m==='w'?'on':''}" data-a="qm" data-m="w">Term to meaning</button><button class="${Q.m==='m'?'on':''}" data-a="qm" data-m="m">Meaning to term</button></div><div class="row end"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" data-a="qgo">Start quiz</button></div>`);$('#qs').value=s}
+function startQuiz(){const p=poolOf($('#qs').value),all=poolOf('all');if(p.length<2)return toast('Pick a scope with at least 2 cards');
+const key=Q.m==='w'?'meaning':'word',n=Q.n==='All'?p.length:Math.min(+Q.n,p.length);
+QZ={i:0,score:0,miss:[],qs:shuffle(p).slice(0,n).map(c=>{const seen=new Set([c[key]]),ds=[];for(const x of shuffle(all)){if(ds.length>=3)break;if(!seen.has(x[key])){seen.add(x[key]);ds.push(x)}}return{c,o:shuffle([c,...ds])}})};qShow()}
+function qShow(){const q=QZ.qs[QZ.i],w=Q.m==='w';QZ.ans=false;
+sheet(`<div class="bar"><span>Question ${QZ.i+1} of ${QZ.qs.length}</span><div class="grow"></div><span class="chip">Score <b id="qsc">${QZ.score}</b></span><button class="sq sm" data-a="close" aria-label="Close">✕</button></div><div class="prog"><i style="width:${QZ.i/QZ.qs.length*100}%"></i></div><div class="panel qq"><h2>${esc(w?q.c.word:q.c.meaning)}</h2></div>${q.o.map((o,i)=>`<button class="opt" data-a="ans" data-i="${i}">${esc(w?o.meaning:o.word)}</button>`).join('')}<div class="fb" id="qfb"></div><button class="btn wide" id="qnx" hidden data-a="qnext">${QZ.i+1<QZ.qs.length?'Next question':'See results'}</button>`,'quiz')}
+function answer(i){if(QZ.ans)return;QZ.ans=true;const q=QZ.qs[QZ.i],ok=q.o[i]===q.c;
+document.querySelectorAll('.opt').forEach((b,j)=>{if(q.o[j]===q.c)b.classList.add('ok');else if(j===i)b.classList.add('bad')});
+if(ok)QZ.score++;else QZ.miss.push(q.c);
+$('#qsc').textContent=QZ.score;$('#qfb').innerHTML=ok?'✅ Correct':'❌ Correct answer: <b>'+esc(Q.m==='w'?q.c.meaning:q.c.word)+'</b>';$('#qnx').hidden=false}
+function qDone(){const n=QZ.qs.length,p=Math.round(QZ.score/n*100);
+sheet(`<div class="res"><div class="big">${p>=80?'🏆':p>=50?'👍':'📚'}</div><h2>${p}%</h2><p class="mt">You got ${QZ.score} of ${n} right</p></div>`+(QZ.miss.length?`<h3>Worth another look</h3>`+QZ.miss.map(c=>`<div class="miss"><b>${esc(c.word)}</b><span>${esc(c.meaning)}</span></div>`).join(''):'')+`<div class="row end"><button class="btn ghost" data-a="close">Done</button><button class="btn" data-a="quizNow">Try again</button></div>`)}
+document.addEventListener('click',e=>{
+if(!e.target.closest('.hin'))$('#res').style.display='none';
+if(e.target.id==='ov'&&!mode)closeSheet();
+const t=e.target.closest('[data-a]');if(t&&A[t.dataset.a])A[t.dataset.a](Object.assign({el:t},t.dataset))});
+document.addEventListener('input',e=>{if(e.target.id==='notes'){cat().notes=e.target.value;save();const s=$('#saved');s.classList.add('on');clearTimeout(nt);nt=setTimeout(()=>s.classList.remove('on'),1200)}});
+$('#q').addEventListener('input',()=>{const v=$('#q').value.trim().toLowerCase(),r=$('#res');if(!v){r.style.display='none';return}
+const h=[];S.cats.forEach(c=>c.decks.forEach(d=>d.cards.forEach(k=>{if([k.word,k.meaning,k.root,k.sentence].some(x=>(x||'').toLowerCase().includes(v)))h.push([c,d,k])})));
+r.innerHTML=h.length?h.slice(0,30).map(([c,d,k])=>`<div data-a="hit" data-c="${c.id}" data-d="${d.id}"><small>${esc(c.name)} › ${esc(d.title)}</small><b>${esc(k.word)}</b><br><span class="mt">${esc(k.meaning.slice(0,90))}</span></div>`).join(''):'<div class="mt">No matching cards</div>';r.style.display='block'});
+$('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const n=norm(JSON.parse(r.result));if(!n)throw 0;if(!confirm('Replace your current data with this backup?'))return;S.cats=n;save();closeSheet();go('home',null,null);toast('Backup restored')}catch(x){toast('That is not a valid backup file')}};r.readAsText(f);e.target.value=''};
+let sx=0;
+$('#ov').addEventListener('touchstart',e=>{sx=e.changedTouches[0].clientX},{passive:true});
+$('#ov').addEventListener('touchend',e=>{if(mode!=='study')return;const dx=e.changedTouches[0].clientX-sx;if(dx>70)A.prev();else if(dx<-70)A.next()},{passive:true});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();if(mode==='study'){if(e.code==='Space'){e.preventDefault();A.flip()}else if(e.code==='ArrowRight')A.next();else if(e.code==='ArrowLeft')A.prev()}});
+render();
+</script>
+</body>
+</html>
